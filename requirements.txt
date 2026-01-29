@@ -1,0 +1,15 @@
+# Core
+numpy<2
+pandas
+scipy
+
+# Visualization
+matplotlib
+seaborn
+
+# Notebooks
+jupyter
+
+# ML
+scikit-learn
+xgboost

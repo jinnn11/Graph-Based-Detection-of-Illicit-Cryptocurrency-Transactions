@@ -1,0 +1,8 @@
+{
+  "seed": 42,
+  "metrics": {
+    "pr_auc": 0.5524918964443568,
+    "recall_at_1pct_fpr": 0.48284313725490197,
+    "precision_at_1pct": 1.0
+  }
+}
