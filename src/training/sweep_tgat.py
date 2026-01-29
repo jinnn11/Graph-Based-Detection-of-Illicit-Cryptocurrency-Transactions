@@ -71,12 +71,19 @@ def main() -> None:
         help="Use a smaller grid tuned for laptop speed",
     )
     parser.add_argument(
+        "--device",
+        choices=["auto", "cuda", "cpu", "mps"],
+        default="auto",
+        help="Device selection (auto prefers cuda then mps)",
+    )
+    parser.add_argument(
         "--no-reuse-data",
         action="store_true",
         help="Reload graph data for every trial (slower).",
     )
     args = parser.parse_args()
 
+    device_pref = None if args.device == "auto" else args.device
     rng = np.random.default_rng(args.seed)
     output_dir = Path(args.output_dir)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -90,7 +97,7 @@ def main() -> None:
     leaderboard = []
     cached_data = None
     if not args.no_reuse_data:
-        device = get_device()
+        device = get_device(device_pref)
         cached_data = prepare_data(
             TrainConfig(
                 data_dir=args.data_dir,
@@ -110,6 +117,7 @@ def main() -> None:
                 loss="cross_entropy",
                 focal_gamma=2.0,
                 add_self_loops=True,
+                device=device_pref,
             ),
             device,
         )
@@ -136,6 +144,7 @@ def main() -> None:
             loss=params["loss"],
             focal_gamma=params["focal_gamma"],
             add_self_loops=True,
+            device=device_pref,
         )
 
         print(f"\nTrial {idx} | params={params}")

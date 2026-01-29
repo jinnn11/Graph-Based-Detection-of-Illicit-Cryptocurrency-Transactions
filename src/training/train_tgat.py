@@ -74,6 +74,7 @@ class TrainConfig:
     loss: str
     focal_gamma: float
     add_self_loops: bool
+    device: str | None = None
 
 
 def set_seed(seed: int) -> None:
@@ -84,7 +85,13 @@ def set_seed(seed: int) -> None:
         torch.cuda.manual_seed_all(seed)
 
 
-def get_device() -> torch.device:
+def get_device(preferred: str | None = None) -> torch.device:
+    if preferred is not None:
+        if preferred == "cuda" and not torch.cuda.is_available():
+            raise RuntimeError("CUDA requested but not available.")
+        if preferred == "mps" and not torch.backends.mps.is_available():
+            raise RuntimeError("MPS requested but not available.")
+        return torch.device(preferred)
     if torch.cuda.is_available():
         return torch.device("cuda")
     if torch.backends.mps.is_available():
@@ -263,7 +270,7 @@ def prepare_data(config: TrainConfig, device: torch.device) -> LoadedData:
 def run_experiment(config: TrainConfig, cached: LoadedData | None = None) -> Dict[str, float]:
     set_seed(config.seed)
 
-    device = get_device()
+    device = get_device(config.device)
     print(f"Using device: {device}")
     if cached is None:
         data = prepare_data(config, device)
@@ -395,8 +402,15 @@ def main() -> None:
     parser.add_argument("--loss", choices=["cross_entropy", "focal"], default="cross_entropy")
     parser.add_argument("--focal-gamma", type=float, default=2.0)
     parser.add_argument("--add-self-loops", action="store_true")
+    parser.add_argument(
+        "--device",
+        choices=["auto", "cuda", "cpu", "mps"],
+        default="auto",
+        help="Device selection (auto prefers cuda then mps)",
+    )
     args = parser.parse_args()
 
+    device = None if args.device == "auto" else args.device
     config = TrainConfig(
         data_dir=args.data_dir,
         graph_path=args.graph_path,
@@ -415,6 +429,7 @@ def main() -> None:
         loss=args.loss,
         focal_gamma=args.focal_gamma,
         add_self_loops=args.add_self_loops,
+        device=device,
     )
     run_experiment(config)
 
