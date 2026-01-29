@@ -1,0 +1,686 @@
+[
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_35.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.4918189846253441,
+      "recall_at_1pct_fpr": 0.41421568627450983,
+      "precision_at_1pct": 0.9545454545454546
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_33.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.46409883489565656,
+      "recall_at_1pct_fpr": 0.3897058823529412,
+      "precision_at_1pct": 0.8977272727272727
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_36.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.45662317892355025,
+      "recall_at_1pct_fpr": 0.3627450980392157,
+      "precision_at_1pct": 0.9545454545454546
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_6.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.45491975904565285,
+      "recall_at_1pct_fpr": 0.39705882352941174,
+      "precision_at_1pct": 0.9090909090909091
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_28.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.4497326289281244,
+      "recall_at_1pct_fpr": 0.3553921568627451,
+      "precision_at_1pct": 0.9659090909090909
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_25.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 2,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.43721300234977284,
+      "recall_at_1pct_fpr": 0.35049019607843135,
+      "precision_at_1pct": 0.9318181818181818
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_14.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 2,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.4217775136747099,
+      "recall_at_1pct_fpr": 0.3480392156862745,
+      "precision_at_1pct": 0.9431818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_26.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.4145499436372412,
+      "recall_at_1pct_fpr": 0.3137254901960784,
+      "precision_at_1pct": 0.9545454545454546
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_16.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 2,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.40869570921446546,
+      "recall_at_1pct_fpr": 0.3161764705882353,
+      "precision_at_1pct": 0.9204545454545454
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_29.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.4036986335312467,
+      "recall_at_1pct_fpr": 0.30637254901960786,
+      "precision_at_1pct": 0.8977272727272727
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_30.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3928580628983717,
+      "recall_at_1pct_fpr": 0.3284313725490196,
+      "precision_at_1pct": 0.7840909090909091
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_12.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.01,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3925896969359306,
+      "recall_at_1pct_fpr": 0.2647058823529412,
+      "precision_at_1pct": 0.7045454545454546
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_31.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3884438355815315,
+      "recall_at_1pct_fpr": 0.32598039215686275,
+      "precision_at_1pct": 0.7727272727272727
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_3.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.38628310970624363,
+      "recall_at_1pct_fpr": 0.23284313725490197,
+      "precision_at_1pct": 0.8181818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_27.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.38140315565999083,
+      "recall_at_1pct_fpr": 0.3161764705882353,
+      "precision_at_1pct": 0.6931818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_19.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3795948203632459,
+      "recall_at_1pct_fpr": 0.27450980392156865,
+      "precision_at_1pct": 0.8409090909090909
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_23.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.35440831313286264,
+      "recall_at_1pct_fpr": 0.27450980392156865,
+      "precision_at_1pct": 0.625
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_7.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.01,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3543761119345499,
+      "recall_at_1pct_fpr": 0.23774509803921567,
+      "precision_at_1pct": 0.6931818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_9.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.01,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3543761119345499,
+      "recall_at_1pct_fpr": 0.23774509803921567,
+      "precision_at_1pct": 0.6931818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_34.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3510801508766981,
+      "recall_at_1pct_fpr": 0.3137254901960784,
+      "precision_at_1pct": 0.7613636363636364
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_1.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.01,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3434090284743335,
+      "recall_at_1pct_fpr": 0.22794117647058823,
+      "precision_at_1pct": 0.6931818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_10.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.01,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.33553002573123175,
+      "recall_at_1pct_fpr": 0.22549019607843138,
+      "precision_at_1pct": 0.5227272727272727
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_2.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3323075048936106,
+      "recall_at_1pct_fpr": 0.23284313725490197,
+      "precision_at_1pct": 0.7272727272727273
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_8.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3208574283620528,
+      "recall_at_1pct_fpr": 0.22549019607843138,
+      "precision_at_1pct": 0.5340909090909091
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_11.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 256,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3200068560299013,
+      "recall_at_1pct_fpr": 0.21323529411764705,
+      "precision_at_1pct": 0.7272727272727273
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_20.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.318048147127858,
+      "recall_at_1pct_fpr": 0.29411764705882354,
+      "precision_at_1pct": 0.6022727272727273
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gatv2_trial_32.json",
+    "model": "gatv2",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.30919028174667723,
+      "recall_at_1pct_fpr": 0.2034313725490196,
+      "precision_at_1pct": 0.5568181818181818
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_18.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.30258728499883414,
+      "recall_at_1pct_fpr": 0.23039215686274508,
+      "precision_at_1pct": 0.5681818181818182
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_5.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.01,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.28181900616525624,
+      "recall_at_1pct_fpr": 0.25,
+      "precision_at_1pct": 0.5227272727272727
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_21.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 2,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.2817226402686235,
+      "recall_at_1pct_fpr": 0.27205882352941174,
+      "precision_at_1pct": 0.5340909090909091
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_13.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.005,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.2780637587436999,
+      "recall_at_1pct_fpr": 0.1715686274509804,
+      "precision_at_1pct": 0.375
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_17.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.24933301408946862,
+      "recall_at_1pct_fpr": 0.19117647058823528,
+      "precision_at_1pct": 0.6136363636363636
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_22.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.22280891783677592,
+      "recall_at_1pct_fpr": 0.15196078431372548,
+      "precision_at_1pct": 0.3522727272727273
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_15.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.20364813520783792,
+      "recall_at_1pct_fpr": 0.05392156862745098,
+      "precision_at_1pct": 0.1590909090909091
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/gat_trial_24.json",
+    "model": "gat",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.005,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.18545275095822186,
+      "recall_at_1pct_fpr": 0.08088235294117647,
+      "precision_at_1pct": 0.26136363636363635
+    }
+  },
+  {
+    "output": "experiments/gnn_sweep/sage_trial_4.json",
+    "model": "sage",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.01,
+      "weight_decay": 0.001,
+      "heads": 4,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.18465523717282145,
+      "recall_at_1pct_fpr": 0.024509803921568627,
+      "precision_at_1pct": 0.11363636363636363
+    }
+  }
+]

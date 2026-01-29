@@ -4,6 +4,7 @@ from __future__ import annotations
 import argparse
 import json
 import random
+from itertools import product
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Dict, Tuple
@@ -107,28 +108,100 @@ def recall_at_fpr(y_true: np.ndarray, y_score: np.ndarray, fpr_target: float = 0
     return float(tpr[valid].max())
 
 
-def train_model(split: SplitData, random_state: int = 42) -> XGBClassifier:
+def build_param_grid() -> list[dict]:
+    grid = {
+        "n_estimators": [300, 600],
+        "max_depth": [4, 6, 8],
+        "learning_rate": [0.03, 0.05, 0.1],
+        "subsample": [0.8, 1.0],
+        "colsample_bytree": [0.8, 1.0],
+        "min_child_weight": [1, 5],
+        "reg_alpha": [0.0, 0.1],
+        "reg_lambda": [1.0, 5.0],
+    }
+    keys = list(grid.keys())
+    values = [grid[k] for k in keys]
+    return [dict(zip(keys, combo)) for combo in product(*values)]
+
+
+def train_with_params(
+    split: SplitData,
+    params: Dict[str, float],
+    random_state: int,
+    early_stopping_rounds: int,
+) -> XGBClassifier:
     scale_pos_weight = compute_class_weight(split.y_train)
     model = XGBClassifier(
-        n_estimators=300,
-        max_depth=6,
-        learning_rate=0.05,
-        subsample=0.8,
-        colsample_bytree=0.8,
         objective="binary:logistic",
         eval_metric="aucpr",
         tree_method="hist",
         n_jobs=-1,
         scale_pos_weight=scale_pos_weight,
         random_state=random_state,
+        **params,
     )
-    model.fit(
-        split.x_train,
-        split.y_train,
-        eval_set=[(split.x_val, split.y_val)],
-        verbose=25,
-    )
+    try:
+        model.fit(
+            split.x_train,
+            split.y_train,
+            eval_set=[(split.x_val, split.y_val)],
+            verbose=False,
+            early_stopping_rounds=early_stopping_rounds,
+        )
+    except TypeError:
+        # Older XGBoost sklearn API may not support early_stopping_rounds
+        print("  note: early_stopping_rounds not supported by this XGBoost version; training without it")
+        model.fit(
+            split.x_train,
+            split.y_train,
+            eval_set=[(split.x_val, split.y_val)],
+            verbose=False,
+        )
     return model
+
+
+def tune_model(
+    split: SplitData,
+    seed: int,
+    max_trials: int,
+    early_stopping_rounds: int,
+) -> Tuple[XGBClassifier, Dict[str, float], Dict[str, float], int]:
+    rng = np.random.default_rng(seed)
+    grid = build_param_grid()
+    if max_trials >= len(grid):
+        trials = grid
+    else:
+        indices = rng.choice(len(grid), size=max_trials, replace=False)
+        trials = [grid[i] for i in indices]
+
+    best_model = None
+    best_params = None
+    best_metrics = None
+    best_score = -np.inf
+
+    n_trials = len(trials)
+    print(f"Tuning XGBoost over {n_trials} trials...")
+    for idx, params in enumerate(trials, start=1):
+        print(f"[{idx}/{len(trials)}] params={params}")
+        model = train_with_params(
+            split,
+            params=params,
+            random_state=seed,
+            early_stopping_rounds=early_stopping_rounds,
+        )
+        val_metrics = evaluate(model, split.x_val, split.y_val)
+        score = val_metrics["pr_auc"]
+        print(f"  val_pr_auc={score:.4f}")
+        if score > best_score:
+            best_score = score
+            best_model = model
+            best_params = params
+            best_metrics = val_metrics
+
+    if best_model is None or best_params is None or best_metrics is None:
+        raise RuntimeError("Tuning failed to produce a valid model.")
+
+    return best_model, best_params, best_metrics, n_trials
 
 
 def evaluate(model: XGBClassifier, x: np.ndarray, y: np.ndarray) -> Dict[str, float]:
@@ -140,11 +213,21 @@ def evaluate(model: XGBClassifier, x: np.ndarray, y: np.ndarray) -> Dict[str, fl
     }
 
 
-def save_results(output_path: Path, metrics: Dict[str, float], seed: int) -> None:
+def save_results(
+    output_path: Path,
+    metrics: Dict[str, float],
+    seed: int,
+    best_params: Dict[str, float],
+    val_metrics: Dict[str, float],
+    n_trials: int,
+) -> None:
     output_path.parent.mkdir(parents=True, exist_ok=True)
     payload = {
         "seed": seed,
         "metrics": metrics,
+        "val_metrics": val_metrics,
+        "best_params": best_params,
+        "n_trials": n_trials,
     }
     output_path.write_text(json.dumps(payload, indent=2))
 
@@ -158,18 +241,42 @@ def main() -> None:
         default="experiments/baseline_results.json",
         help="Where to save results JSON",
     )
+    parser.add_argument(
+        "--max-trials",
+        type=int,
+        default=30,
+        help="Max hyperparameter trials for tuning",
+    )
+    parser.add_argument(
+        "--early-stopping-rounds",
+        type=int,
+        default=50,
+        help="Early stopping rounds on validation set",
+    )
     args = parser.parse_args()
 
     set_seed(args.seed)
     split = prepare_data(Path(args.data_dir))
-    model = train_model(split, random_state=args.seed)
+    model, best_params, val_metrics, n_trials = tune_model(
+        split,
+        seed=args.seed,
+        max_trials=args.max_trials,
+        early_stopping_rounds=args.early_stopping_rounds,
+    )
     metrics = evaluate(model, split.x_test, split.y_test)
 
     print("Test metrics:")
     for key, value in metrics.items():
         print(f"{key}: {value:.4f}")
 
-    save_results(Path(args.output), metrics, seed=args.seed)
+    save_results(
+        Path(args.output),
+        metrics,
+        seed=args.seed,
+        best_params=best_params,
+        val_metrics=val_metrics,
+        n_trials=n_trials,
+    )
 
 
 if __name__ == "__main__":

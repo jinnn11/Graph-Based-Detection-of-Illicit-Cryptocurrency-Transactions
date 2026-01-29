@@ -19,6 +19,10 @@ class GraphData:
     val_mask: torch.Tensor
     test_mask: torch.Tensor
     id_mapping: Dict[int, int]
+    x_mean: Optional[torch.Tensor] = None
+    x_std: Optional[torch.Tensor] = None
+    add_reverse_edges: bool = False
+    normalized: bool = False
 
 
 def load_features(features_path: Path) -> pd.DataFrame:
@@ -49,6 +53,22 @@ def map_edges(edges: pd.DataFrame, id_mapping: Dict[int, int]) -> torch.Tensor:
     return edge_index
 
 
+def add_reverse_edges(edge_index: torch.Tensor) -> torch.Tensor:
+    rev = edge_index.flip(0)
+    return torch.cat([edge_index, rev], dim=1)
+
+
+def normalize_features(
+    x: torch.Tensor, train_mask: torch.Tensor
+) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
+    train_x = x[train_mask]
+    mean = train_x.mean(dim=0)
+    std = train_x.std(dim=0, unbiased=False)
+    std = torch.where(std == 0, torch.ones_like(std), std)
+    x_norm = (x - mean) / std
+    return x_norm, mean, std
+
+
 def build_splits(time_step: pd.Series) -> Tuple[torch.Tensor, torch.Tensor, torch.Tensor]:
     train_mask = (time_step <= 34).to_numpy()
     val_mask = ((time_step >= 35) & (time_step <= 41)).to_numpy()
@@ -61,7 +81,12 @@ def build_splits(time_step: pd.Series) -> Tuple[torch.Tensor, torch.Tensor, torc
     )
 
 
-def build_graph(data_dir: Path) -> GraphData:
+def build_graph(
+    data_dir: Path,
+    *,
+    add_reverse: bool = False,
+    normalize: bool = False,
+) -> GraphData:
     features_path = data_dir / "elliptic_txs_features.csv"
     edges_path = data_dir / "elliptic_txs_edgelist.csv"
 
@@ -80,6 +105,14 @@ def build_graph(data_dir: Path) -> GraphData:
 
     train_mask, val_mask, test_mask = build_splits(features["time_step"])
 
+    x_mean = None
+    x_std = None
+    if normalize:
+        x, x_mean, x_std = normalize_features(x, train_mask)
+
+    if add_reverse:
+        edge_index = add_reverse_edges(edge_index)
+
     return GraphData(
         x=x,
         edge_index=edge_index,
@@ -88,6 +121,10 @@ def build_graph(data_dir: Path) -> GraphData:
         val_mask=val_mask,
         test_mask=test_mask,
         id_mapping=id_mapping,
+        x_mean=x_mean,
+        x_std=x_std,
+        add_reverse_edges=add_reverse,
+        normalized=normalize,
     )
 
 
@@ -101,18 +138,39 @@ def save_graph(graph: GraphData, output_path: Path) -> None:
         "val_mask": graph.val_mask,
         "test_mask": graph.test_mask,
         "id_mapping": graph.id_mapping,
+        "x_mean": graph.x_mean,
+        "x_std": graph.x_std,
+        "add_reverse_edges": graph.add_reverse_edges,
+        "normalized": graph.normalized,
     }
     torch.save(payload, output_path)
 
 
-def main(data_dir: Optional[str] = None, output: Optional[str] = None) -> None:
-    if data_dir is None:
-        data_dir = "data/raw"
-    if output is None:
-        output = "data/processed/graph.pt"
-    graph = build_graph(Path(data_dir))
-    save_graph(graph, Path(output))
-    print("Saved:", output)
+def main() -> None:
+    import argparse
+
+    parser = argparse.ArgumentParser(description="Build processed graph tensors")
+    parser.add_argument("--data-dir", default="data/raw", help="Path to raw data directory")
+    parser.add_argument("--output", default="data/processed/graph.pt", help="Output .pt path")
+    parser.add_argument(
+        "--add-reverse-edges",
+        action="store_true",
+        help="Add reverse edges to make message passing bidirectional",
+    )
+    parser.add_argument(
+        "--normalize-features",
+        action="store_true",
+        help="Standardize features using train split statistics",
+    )
+    args = parser.parse_args()
+
+    graph = build_graph(
+        Path(args.data_dir),
+        add_reverse=args.add_reverse_edges,
+        normalize=args.normalize_features,
+    )
+    save_graph(graph, Path(args.output))
+    print("Saved:", args.output)
     print("x:", graph.x.shape)
     print("edge_index:", graph.edge_index.shape)
     print(

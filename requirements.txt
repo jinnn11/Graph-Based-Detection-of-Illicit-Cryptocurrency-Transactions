@@ -13,3 +13,4 @@ jupyter
 # ML
 scikit-learn
 xgboost
+torch-geometric

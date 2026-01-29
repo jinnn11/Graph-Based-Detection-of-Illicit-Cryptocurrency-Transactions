@@ -1,0 +1,30 @@
+{
+  "seed": 42,
+  "best_epoch": 2,
+  "metrics": {
+    "pr_auc": 0.3323075048936106,
+    "recall_at_1pct_fpr": 0.23284313725490197,
+    "precision_at_1pct": 0.7272727272727273
+  },
+  "val_metrics": {
+    "pr_auc": 0.40462619861570015,
+    "recall_at_1pct_fpr": 0.23703703703703705,
+    "precision_at_1pct": 0.9230769230769231
+  },
+  "config": {
+    "model": "sage",
+    "heads": 4,
+    "hidden_dim": 256,
+    "num_layers": 3,
+    "dropout": 0.5,
+    "lr": 0.005,
+    "weight_decay": 0.0005,
+    "epochs": 120,
+    "patience": 15,
+    "loss": "focal",
+    "focal_gamma": 1.0,
+    "add_self_loops": true,
+    "graph_normalized": true,
+    "graph_reverse_edges": true
+  }
+}

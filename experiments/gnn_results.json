@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "best_epoch": 18,
+  "metrics": {
+    "pr_auc": 0.3773361557053312,
+    "recall_at_1pct_fpr": 0.29901960784313725,
+    "precision_at_1pct": 0.7045454545454546
+  },
+  "val_metrics": {
+    "pr_auc": 0.6903468065800611,
+    "recall_at_1pct_fpr": 0.5022222222222222,
+    "precision_at_1pct": 0.9615384615384616
+  },
+  "config": {
+    "model": "sage",
+    "hidden_dim": 128,
+    "num_layers": 2,
+    "dropout": 0.5,
+    "lr": 0.005,
+    "weight_decay": 0.0005,
+    "epochs": 50
+  }
+}

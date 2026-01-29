@@ -1,0 +1,30 @@
+{
+  "seed": 42,
+  "best_epoch": 16,
+  "metrics": {
+    "pr_auc": 0.18545275095822186,
+    "recall_at_1pct_fpr": 0.08088235294117647,
+    "precision_at_1pct": 0.26136363636363635
+  },
+  "val_metrics": {
+    "pr_auc": 0.5707017766049324,
+    "recall_at_1pct_fpr": 0.3837037037037037,
+    "precision_at_1pct": 0.8974358974358975
+  },
+  "config": {
+    "model": "gat",
+    "heads": 8,
+    "hidden_dim": 128,
+    "num_layers": 3,
+    "dropout": 0.5,
+    "lr": 0.005,
+    "weight_decay": 0.0005,
+    "epochs": 120,
+    "patience": 15,
+    "loss": "cross_entropy",
+    "focal_gamma": 2.0,
+    "add_self_loops": true,
+    "graph_normalized": true,
+    "graph_reverse_edges": true
+  }
+}

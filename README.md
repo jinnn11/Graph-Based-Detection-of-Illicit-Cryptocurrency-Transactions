@@ -46,11 +46,20 @@ Notebook: `notebooks/01_eda.ipynb`
 - Class-weighted loss
 - Temporal split: train <= 34, val 35-41, test >= 42
 
+### Baseline 2: Simple GNN
+- Model: GraphSAGE / GAT
+- Message passing on directed graph (optionally with reverse edges)
+- Labeled nodes only for loss
+- Class-weighted CrossEntropy loss
+- Temporal split: train <= 34, val 35-41, test >= 42
+ - Optional: self-loops, feature normalization, focal loss
+
 #### Results
 
 | Model | PR-AUC | Recall @ 1% FPR | Precision @ 1% |
 |---|---:|---:|---:|
-| XGBoost (features only) | TBD | TBD | TBD |
+| XGBoost (features only) | 0.5554 | 0.4828 | 1.0000 |
+| GraphSAGE (norm + reverse edges) | 0.3425 | 0.2402 | 0.8295 |
 
 ## 5. Next steps
 - GNN training

@@ -1,8 +1,24 @@
 {
   "seed": 42,
   "metrics": {
-    "pr_auc": 0.5524918964443568,
+    "pr_auc": 0.5554377725477662,
     "recall_at_1pct_fpr": 0.48284313725490197,
     "precision_at_1pct": 1.0
-  }
+  },
+  "val_metrics": {
+    "pr_auc": 0.9353345096629035,
+    "recall_at_1pct_fpr": 0.8918518518518519,
+    "precision_at_1pct": 1.0
+  },
+  "best_params": {
+    "n_estimators": 600,
+    "max_depth": 6,
+    "learning_rate": 0.03,
+    "subsample": 1.0,
+    "colsample_bytree": 0.8,
+    "min_child_weight": 1,
+    "reg_alpha": 0.1,
+    "reg_lambda": 1.0
+  },
+  "n_trials": 30
 }
