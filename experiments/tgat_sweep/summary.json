@@ -1,0 +1,230 @@
+[
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_7.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "time_dim": 16,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.4733003921880213,
+      "recall_at_1pct_fpr": 0.39950980392156865,
+      "precision_at_1pct": 0.9772727272727273
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_9.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.001,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "time_dim": 8,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.4709916384246317,
+      "recall_at_1pct_fpr": 0.39215686274509803,
+      "precision_at_1pct": 0.9772727272727273
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_10.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "heads": 2,
+      "time_dim": 32,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.4404255743128622,
+      "recall_at_1pct_fpr": 0.34558823529411764,
+      "precision_at_1pct": 0.9545454545454546
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_12.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "time_dim": 8,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.4242200308990335,
+      "recall_at_1pct_fpr": 0.3553921568627451,
+      "precision_at_1pct": 0.8636363636363636
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_1.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "time_dim": 32,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.38465875028720586,
+      "recall_at_1pct_fpr": 0.2916666666666667,
+      "precision_at_1pct": 0.8863636363636364
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_4.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "time_dim": 16,
+      "loss": "cross_entropy",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3489743309758516,
+      "recall_at_1pct_fpr": 0.28921568627450983,
+      "precision_at_1pct": 0.7272727272727273
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_5.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 2,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "time_dim": 16,
+      "loss": "cross_entropy",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.3487106110484661,
+      "recall_at_1pct_fpr": 0.32107843137254904,
+      "precision_at_1pct": 0.7045454545454546
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_6.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.001,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "time_dim": 32,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.3248832547606408,
+      "recall_at_1pct_fpr": 0.2426470588235294,
+      "precision_at_1pct": 0.7272727272727273
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_2.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 2,
+      "dropout": 0.3,
+      "lr": 0.001,
+      "weight_decay": 0.0005,
+      "heads": 8,
+      "time_dim": 8,
+      "loss": "focal",
+      "focal_gamma": 1.0
+    },
+    "metrics": {
+      "pr_auc": 0.31117734540107567,
+      "recall_at_1pct_fpr": 0.3112745098039216,
+      "precision_at_1pct": 0.6704545454545454
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_11.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.001,
+      "weight_decay": 0.001,
+      "heads": 2,
+      "time_dim": 16,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.2771727760754142,
+      "recall_at_1pct_fpr": 0.19362745098039216,
+      "precision_at_1pct": 0.7045454545454546
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_8.json",
+    "params": {
+      "hidden_dim": 64,
+      "num_layers": 3,
+      "dropout": 0.5,
+      "lr": 0.003,
+      "weight_decay": 0.001,
+      "heads": 8,
+      "time_dim": 8,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.17906925987604133,
+      "recall_at_1pct_fpr": 0.14950980392156862,
+      "precision_at_1pct": 0.42045454545454547
+    }
+  },
+  {
+    "output": "experiments/tgat_sweep/tgat_trial_3.json",
+    "params": {
+      "hidden_dim": 128,
+      "num_layers": 3,
+      "dropout": 0.3,
+      "lr": 0.003,
+      "weight_decay": 0.0005,
+      "heads": 4,
+      "time_dim": 16,
+      "loss": "focal",
+      "focal_gamma": 2.0
+    },
+    "metrics": {
+      "pr_auc": 0.08755227219322213,
+      "recall_at_1pct_fpr": 0.004901960784313725,
+      "precision_at_1pct": 0.022727272727272728
+    }
+  }
+]
