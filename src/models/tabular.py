@@ -33,6 +33,10 @@ class SplitData:
 
 
 def load_features(features_path: Path) -> pd.DataFrame:
+    with open(features_path, "r", encoding="utf-8") as f:
+        first = f.readline().strip()
+    if first.startswith("txId,"):
+        return pd.read_csv(features_path)
     features = pd.read_csv(features_path, header=None)
     n_cols = features.shape[1]
     feature_cols = ["txId", "time_step"] + [f"feature_{i}" for i in range(n_cols - 2)]
@@ -63,8 +67,10 @@ def set_seed(seed: int) -> None:
     np.random.seed(seed)
 
 
-def prepare_data(data_dir: Path) -> SplitData:
-    features = load_features(data_dir / "elliptic_txs_features.csv")
+def prepare_data(data_dir: Path, features_path: Path | None = None) -> SplitData:
+    if features_path is None:
+        features_path = data_dir / "elliptic_txs_features.csv"
+    features = load_features(features_path)
     classes = load_labels(data_dir / "elliptic_txs_classes.csv")
     classes = map_labels(classes)
 
@@ -235,6 +241,11 @@ def save_results(
 def main() -> None:
     parser = argparse.ArgumentParser(description="Tabular baseline (no graph)")
     parser.add_argument("--data-dir", default="data/raw", help="Path to raw data directory")
+    parser.add_argument(
+        "--features-path",
+        default=None,
+        help="Optional CSV with engineered features (must include txId and time_step)",
+    )
     parser.add_argument("--seed", type=int, default=42, help="Random seed")
     parser.add_argument(
         "--output",
@@ -253,10 +264,16 @@ def main() -> None:
         default=50,
         help="Early stopping rounds on validation set",
     )
+    parser.add_argument(
+        "--save-preds",
+        default=None,
+        help="Optional path to save npz with val/test scores",
+    )
     args = parser.parse_args()
 
     set_seed(args.seed)
-    split = prepare_data(Path(args.data_dir))
+    features_path = Path(args.features_path) if args.features_path else None
+    split = prepare_data(Path(args.data_dir), features_path=features_path)
     model, best_params, val_metrics, n_trials = tune_model(
         split,
         seed=args.seed,
@@ -277,6 +294,17 @@ def main() -> None:
         val_metrics=val_metrics,
         n_trials=n_trials,
     )
+
+    if args.save_preds:
+        val_scores = model.predict_proba(split.x_val)[:, 1]
+        test_scores = model.predict_proba(split.x_test)[:, 1]
+        np.savez(
+            args.save_preds,
+            y_val=split.y_val,
+            y_test=split.y_test,
+            score_val=val_scores,
+            score_test=test_scores,
+        )
 
 
 if __name__ == "__main__":

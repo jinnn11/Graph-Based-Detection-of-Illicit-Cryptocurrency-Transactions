@@ -57,6 +57,7 @@ class TrainConfig:
     loss: str
     focal_gamma: float
     add_self_loops: bool
+    save_preds: str | None = None
 
 
 def set_seed(seed: int) -> None:
@@ -153,6 +154,18 @@ def evaluate(logits: torch.Tensor, y: torch.Tensor, mask: torch.Tensor) -> Dict[
         "recall_at_1pct_fpr": recall_at_fpr(y_true, scores, fpr_target=0.01),
         "precision_at_1pct": precision_at_k(y_true, scores, k_frac=0.01),
     }
+
+
+def save_preds(path: str, y: torch.Tensor, logits: torch.Tensor, val_mask: torch.Tensor, test_mask: torch.Tensor) -> None:
+    val_scores = torch.softmax(logits[val_mask], dim=1)[:, 1].detach().cpu().numpy()
+    test_scores = torch.softmax(logits[test_mask], dim=1)[:, 1].detach().cpu().numpy()
+    np.savez(
+        path,
+        y_val=y[val_mask].detach().cpu().numpy(),
+        y_test=y[test_mask].detach().cpu().numpy(),
+        score_val=val_scores,
+        score_test=test_scores,
+    )
 
 
 def train_epoch(
@@ -289,6 +302,9 @@ def run_experiment(config: TrainConfig) -> Dict[str, float]:
     for key, value in test_metrics.items():
         print(f"{key}: {value:.4f}")
 
+    if config.save_preds:
+        save_preds(config.save_preds, y, logits, val_mask, test_mask)
+
     save_results(
         Path(config.output),
         metrics=test_metrics,
@@ -349,6 +365,11 @@ def main() -> None:
         help="Early stopping patience based on val PR-AUC",
     )
     parser.add_argument(
+        "--save-preds",
+        default=None,
+        help="Optional path to save npz with val/test scores",
+    )
+    parser.add_argument(
         "--loss",
         choices=["cross_entropy", "focal"],
         default="cross_entropy",
@@ -385,6 +406,7 @@ def main() -> None:
         loss=args.loss,
         focal_gamma=args.focal_gamma,
         add_self_loops=args.add_self_loops,
+        save_preds=args.save_preds,
     )
     run_experiment(config)
 

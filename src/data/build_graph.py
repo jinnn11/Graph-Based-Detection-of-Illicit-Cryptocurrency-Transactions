@@ -26,6 +26,10 @@ class GraphData:
 
 
 def load_features(features_path: Path) -> pd.DataFrame:
+    with open(features_path, "r", encoding="utf-8") as f:
+        first = f.readline().strip()
+    if first.startswith("txId,"):
+        return pd.read_csv(features_path)
     features = pd.read_csv(features_path, header=None)
     n_cols = features.shape[1]
     feature_cols = ["txId", "time_step"] + [f"feature_{i}" for i in range(n_cols - 2)]
@@ -86,8 +90,10 @@ def build_graph(
     *,
     add_reverse: bool = False,
     normalize: bool = False,
+    features_path: Path | None = None,
 ) -> GraphData:
-    features_path = data_dir / "elliptic_txs_features.csv"
+    if features_path is None:
+        features_path = data_dir / "elliptic_txs_features.csv"
     edges_path = data_dir / "elliptic_txs_edgelist.csv"
 
     features = load_features(features_path)
@@ -153,6 +159,11 @@ def main() -> None:
     parser.add_argument("--data-dir", default="data/raw", help="Path to raw data directory")
     parser.add_argument("--output", default="data/processed/graph.pt", help="Output .pt path")
     parser.add_argument(
+        "--features-path",
+        default=None,
+        help="Optional CSV with engineered features (must include txId and time_step)",
+    )
+    parser.add_argument(
         "--add-reverse-edges",
         action="store_true",
         help="Add reverse edges to make message passing bidirectional",
@@ -164,10 +175,12 @@ def main() -> None:
     )
     args = parser.parse_args()
 
+    features_path = Path(args.features_path) if args.features_path else None
     graph = build_graph(
         Path(args.data_dir),
         add_reverse=args.add_reverse_edges,
         normalize=args.normalize_features,
+        features_path=features_path,
     )
     save_graph(graph, Path(args.output))
     print("Saved:", args.output)
