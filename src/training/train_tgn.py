@@ -217,7 +217,7 @@ def main() -> None:
                 z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
                 logits = decoder(z)[labeled]
             else:
-                memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+                memory.update_state(batch.src, batch.dst, batch.t.long(), batch.msg)
                 mem, _ = memory(nodes)
                 logits = decoder(mem)[labeled]
             loss = F.cross_entropy(logits, labels[labeled])
@@ -242,7 +242,7 @@ def main() -> None:
                 nodes = torch.cat([batch.src, batch.dst])
                 zs[nodes] = z.detach()
             else:
-                memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+                memory.update_state(batch.src, batch.dst, batch.t.long(), batch.msg)
                 nodes = torch.cat([batch.src, batch.dst])
                 mem, _ = memory(nodes)
                 zs[nodes] = mem.detach()
@@ -298,7 +298,7 @@ def main() -> None:
             nodes = torch.cat([batch.src, batch.dst])
             zs[nodes] = z.detach()
         else:
-            memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+            memory.update_state(batch.src, batch.dst, batch.t.long(), batch.msg)
             nodes = torch.cat([batch.src, batch.dst])
             mem, _ = memory(nodes)
             zs[nodes] = mem.detach()
