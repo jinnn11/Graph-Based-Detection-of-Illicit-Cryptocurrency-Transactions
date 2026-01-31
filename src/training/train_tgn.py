@@ -223,6 +223,12 @@ def main() -> None:
             loss = F.cross_entropy(logits, labels[labeled])
             loss.backward()
             optimizer.step()
+            if TGN_AVAILABLE:
+                if hasattr(tgn, "detach"):
+                    tgn.detach()
+            else:
+                if hasattr(memory, "detach"):
+                    memory.detach()
             losses.append(float(loss.item()))
 
         # validation pass (full graph embeddings)
