@@ -154,6 +154,11 @@ def main() -> None:
     val_mask = payload["val_mask"].to(device)
     test_mask = payload["test_mask"].to(device)
 
+    labeled = y >= 0
+    train_mask = train_mask & labeled
+    val_mask = val_mask & labeled
+    test_mask = test_mask & labeled
+
     num_nodes = payload["x"].size(0)
 
     loader = TemporalDataLoader(data, batch_size=args.batch_size)
