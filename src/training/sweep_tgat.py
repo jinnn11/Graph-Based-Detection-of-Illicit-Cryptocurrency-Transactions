@@ -77,6 +77,11 @@ def main() -> None:
         help="Device selection (auto prefers cuda then mps)",
     )
     parser.add_argument(
+        "--cache-on-gpu",
+        action="store_true",
+        help="Keep cached graph tensors on GPU (faster, more memory).",
+    )
+    parser.add_argument(
         "--no-reuse-data",
         action="store_true",
         help="Reload graph data for every trial (slower).",
@@ -97,7 +102,7 @@ def main() -> None:
     leaderboard = []
     cached_data = None
     if not args.no_reuse_data:
-        device = get_device(device_pref)
+        cache_device = get_device(device_pref) if args.cache_on_gpu else get_device("cpu")
         cached_data = prepare_data(
             TrainConfig(
                 data_dir=args.data_dir,
@@ -119,7 +124,7 @@ def main() -> None:
                 add_self_loops=True,
                 device=device_pref,
             ),
-            device,
+            cache_device,
         )
         print("Reusing cached graph tensors across trials for speed.")
     for idx, params in enumerate(trials, start=1):
@@ -154,6 +159,12 @@ def main() -> None:
             "params": params,
             "metrics": metrics,
         })
+        if args.device in {"auto", "cuda"}:
+            try:
+                import torch
+                torch.cuda.empty_cache()
+            except Exception:
+                pass
 
     metric = args.metric
     leaderboard = [row for row in leaderboard if metric in row["metrics"]]

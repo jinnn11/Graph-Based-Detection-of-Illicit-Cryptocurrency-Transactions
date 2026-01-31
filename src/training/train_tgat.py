@@ -280,6 +280,20 @@ def prepare_data(config: TrainConfig, device: torch.device) -> LoadedData:
     )
 
 
+def move_loaded(data: LoadedData, device: torch.device) -> LoadedData:
+    return LoadedData(
+        x=data.x.to(device),
+        edge_index=data.edge_index.to(device),
+        time_step=data.time_step.to(device),
+        y=data.y.to(device),
+        train_mask=data.train_mask.to(device),
+        val_mask=data.val_mask.to(device),
+        test_mask=data.test_mask.to(device),
+        graph_normalized=data.graph_normalized,
+        graph_reverse_edges=data.graph_reverse_edges,
+    )
+
+
 def run_experiment(config: TrainConfig, cached: LoadedData | None = None) -> Dict[str, float]:
     set_seed(config.seed)
 
@@ -288,7 +302,10 @@ def run_experiment(config: TrainConfig, cached: LoadedData | None = None) -> Dic
     if cached is None:
         data = prepare_data(config, device)
     else:
-        data = cached
+        if cached.x.device != device:
+            data = move_loaded(cached, device)
+        else:
+            data = cached
 
     print(f"Graph normalized: {data.graph_normalized}, reverse edges: {data.graph_reverse_edges}")
 
