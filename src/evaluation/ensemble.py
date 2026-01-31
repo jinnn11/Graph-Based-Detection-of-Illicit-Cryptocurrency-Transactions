@@ -2,6 +2,9 @@
 from __future__ import annotations
 
 import argparse
+import json
+from pathlib import Path
+
 import numpy as np
 from sklearn.metrics import average_precision_score, roc_curve
 
@@ -35,6 +38,7 @@ def main() -> None:
     parser.add_argument("--preds-a", required=True, help="NPZ with y_val/y_test/score_val/score_test")
     parser.add_argument("--preds-b", required=True, help="NPZ with y_val/y_test/score_val/score_test")
     parser.add_argument("--weight-a", type=float, default=0.5, help="Weight for model A")
+    parser.add_argument("--output", default=None, help="Optional JSON output path")
     args = parser.parse_args()
 
     a = np.load(args.preds_a)
@@ -49,6 +53,15 @@ def main() -> None:
 
     print("Val metrics:", val_metrics)
     print("Test metrics:", test_metrics)
+
+    if args.output:
+        payload = {
+            "weight_a": args.weight_a,
+            "metrics": test_metrics,
+            "val_metrics": val_metrics,
+        }
+        Path(args.output).parent.mkdir(parents=True, exist_ok=True)
+        Path(args.output).write_text(json.dumps(payload, indent=2))
 
 
 if __name__ == "__main__":
