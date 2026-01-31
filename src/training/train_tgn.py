@@ -99,6 +99,8 @@ def recall_at_fpr(y_true: np.ndarray, y_score: np.ndarray, fpr_target: float = 0
 
 
 def eval_scores(y_true: np.ndarray, y_score: np.ndarray) -> dict:
+    y_true = np.asarray(y_true).reshape(-1)
+    y_score = np.asarray(y_score).reshape(-1)
     return {
         "pr_auc": float(average_precision_score(y_true, y_score)),
         "recall_at_1pct_fpr": recall_at_fpr(y_true, y_score, fpr_target=0.01),
