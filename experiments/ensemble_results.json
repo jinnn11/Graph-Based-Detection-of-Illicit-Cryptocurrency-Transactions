@@ -1,0 +1,13 @@
+{
+  "weight_a": 0.5,
+  "metrics": {
+    "pr_auc": 0.5427075267367133,
+    "recall_at_1pct_fpr": 0.4803921568627451,
+    "precision_at_1pct": 1.0
+  },
+  "val_metrics": {
+    "pr_auc": 0.9324736224665706,
+    "recall_at_1pct_fpr": 0.8933333333333333,
+    "precision_at_1pct": 1.0
+  }
+}
