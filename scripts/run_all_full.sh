@@ -38,6 +38,8 @@ python src/training/sweep_tgat.py \
   --data-dir data/raw \
   --graph-path data/processed/graph_feat.pt \
   --device "$DEVICE" \
+  --val-on-cpu \
+  --test-on-cpu \
   --epochs 120 --patience 15 --max-trials 12 \
   --output-dir experiments/tgat_sweep
 
@@ -56,6 +58,8 @@ PY
       --data-dir data/raw \
       --graph-path data/processed/graph_feat.pt \
       --device "$DEVICE" \
+      --val-on-cpu \
+      --test-on-cpu \
       --epochs 120 --patience 15 --max-trials 12 \
       --output-dir experiments/tgat_focus
   fi
