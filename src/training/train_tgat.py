@@ -76,6 +76,8 @@ class TrainConfig:
     add_self_loops: bool
     device: str | None = None
     save_preds: str | None = None
+    val_on_cpu: bool = False
+    test_on_cpu: bool = False
 
 
 def set_seed(seed: int) -> None:
@@ -349,8 +351,15 @@ def run_experiment(config: TrainConfig, cached: LoadedData | None = None) -> Dic
 
         model.eval()
         with torch.no_grad():
-            logits = model(x, edge_index, time_step)
-            val_metrics = evaluate(logits, y, val_mask)
+            if config.val_on_cpu and device.type == "cuda":
+                model_cpu = model.to("cpu")
+                logits = model_cpu(x.cpu(), edge_index.cpu(), time_step.cpu())
+                val_metrics = evaluate(logits, y.cpu(), val_mask.cpu())
+                model.to(device)
+                torch.cuda.empty_cache()
+            else:
+                logits = model(x, edge_index, time_step)
+                val_metrics = evaluate(logits, y, val_mask)
 
         if val_metrics["pr_auc"] > best_val:
             best_val = val_metrics["pr_auc"]
@@ -378,8 +387,15 @@ def run_experiment(config: TrainConfig, cached: LoadedData | None = None) -> Dic
 
     model.eval()
     with torch.no_grad():
-        logits = model(x, edge_index, time_step)
-        test_metrics = evaluate(logits, y, test_mask)
+        if config.test_on_cpu and device.type == "cuda":
+            model_cpu = model.to("cpu")
+            logits = model_cpu(x.cpu(), edge_index.cpu(), time_step.cpu())
+            test_metrics = evaluate(logits, y.cpu(), test_mask.cpu())
+            model.to(device)
+            torch.cuda.empty_cache()
+        else:
+            logits = model(x, edge_index, time_step)
+            test_metrics = evaluate(logits, y, test_mask)
 
     print("Best epoch:", best_epoch)
     print("Test metrics:")
@@ -441,6 +457,16 @@ def main() -> None:
         help="Optional path to save npz with val/test scores",
     )
     parser.add_argument(
+        "--val-on-cpu",
+        action="store_true",
+        help="Compute validation metrics on CPU to reduce GPU memory use",
+    )
+    parser.add_argument(
+        "--test-on-cpu",
+        action="store_true",
+        help="Compute test metrics on CPU to reduce GPU memory use",
+    )
+    parser.add_argument(
         "--device",
         choices=["auto", "cuda", "cpu", "mps"],
         default="auto",
@@ -469,6 +495,8 @@ def main() -> None:
         add_self_loops=args.add_self_loops,
         device=device,
         save_preds=args.save_preds,
+        val_on_cpu=args.val_on_cpu,
+        test_on_cpu=args.test_on_cpu,
     )
     run_experiment(config)
 
