@@ -16,16 +16,30 @@ from sklearn.metrics import average_precision_score, roc_curve
 try:
     from torch_geometric.data import TemporalData
     from torch_geometric.loader import TemporalDataLoader
-    from torch_geometric.nn.models import TGN
+    try:
+        from torch_geometric.nn.models.tgn import TGN
+        TGN_AVAILABLE = True
+    except ImportError:
+        from torch_geometric.nn.models import TGN
+        TGN_AVAILABLE = True
 except ImportError:
+    TGN_AVAILABLE = False
     try:
         from torch_geometric.data import TemporalData
         from torch_geometric.loader import TemporalDataLoader
-        from torch_geometric_temporal.nn.recurrent import TGN
     except ImportError as exc:  # pragma: no cover
         raise ImportError(
-            "TGN not available. Install a PyG version with TGN, or install "
-            "torch-geometric-temporal."
+            "torch_geometric with temporal support is required for TGN."
+        ) from exc
+    try:
+        from torch_geometric.nn.models import tgn as tgn_module
+        TGNMemory = tgn_module.TGNMemory
+        IdentityMessage = tgn_module.IdentityMessage
+        LastAggregator = tgn_module.LastAggregator
+    except Exception as exc:  # pragma: no cover
+        raise ImportError(
+            "TGN not available. Install a PyG version that includes TGN or a "
+            "torch-geometric-temporal build that exposes TGN."
         ) from exc
 
 
@@ -140,50 +154,98 @@ def main() -> None:
 
     num_nodes = payload["x"].size(0)
 
-    tgn = TGN(
-        num_nodes=num_nodes,
-        raw_msg_dim=payload["msg"].size(1),
-        memory_dim=args.memory_dim,
-        time_dim=args.time_dim,
-        embedding_dim=args.hidden_dim,
-    ).to(device)
-
-    decoder = torch.nn.Linear(args.hidden_dim, 2).to(device)
-
-    optimizer = torch.optim.Adam(list(tgn.parameters()) + list(decoder.parameters()), lr=args.lr, weight_decay=args.weight_decay)
-
     loader = TemporalDataLoader(data, batch_size=args.batch_size)
+
+    if TGN_AVAILABLE:
+        tgn = TGN(
+            num_nodes=num_nodes,
+            raw_msg_dim=payload["msg"].size(1),
+            memory_dim=args.memory_dim,
+            time_dim=args.time_dim,
+            embedding_dim=args.hidden_dim,
+        ).to(device)
+
+        decoder = torch.nn.Linear(args.hidden_dim, 2).to(device)
+        optimizer = torch.optim.Adam(
+            list(tgn.parameters()) + list(decoder.parameters()),
+            lr=args.lr,
+            weight_decay=args.weight_decay,
+        )
+    else:
+        # Minimal TGN-style memory pipeline using PyG building blocks
+        memory = TGNMemory(
+            num_nodes=num_nodes,
+            raw_msg_dim=payload["msg"].size(1),
+            memory_dim=args.memory_dim,
+            time_dim=args.time_dim,
+            message_module=IdentityMessage(payload["msg"].size(1), args.memory_dim, args.time_dim),
+            aggregator_module=LastAggregator(),
+        ).to(device)
+        decoder = torch.nn.Sequential(
+            torch.nn.Linear(args.memory_dim, args.hidden_dim),
+            torch.nn.ReLU(),
+            torch.nn.Linear(args.hidden_dim, 2),
+        ).to(device)
+        optimizer = torch.optim.Adam(
+            list(memory.parameters()) + list(decoder.parameters()),
+            lr=args.lr,
+            weight_decay=args.weight_decay,
+        )
 
     best_val = -np.inf
     best_state = None
     patience_counter = 0
 
     for epoch in range(1, args.epochs + 1):
-        tgn.train()
+        if TGN_AVAILABLE:
+            tgn.train()
+            tgn.reset_state()
+        else:
+            memory.train()
+            memory.reset_state()
         decoder.train()
-        tgn.reset_state()
 
         losses = []
         for batch in loader:
             optimizer.zero_grad()
-            z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
-            # supervised nodes: batch.src and batch.dst
             nodes = torch.cat([batch.src, batch.dst])
-            logits = decoder(z)
-            loss = F.cross_entropy(logits, y[nodes])
+            labels = y[nodes]
+            labeled = labels >= 0
+            if labeled.sum().item() == 0:
+                continue
+            if TGN_AVAILABLE:
+                z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
+                logits = decoder(z)[labeled]
+            else:
+                memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+                mem, _ = memory(nodes)
+                logits = decoder(mem)[labeled]
+            loss = F.cross_entropy(logits, labels[labeled])
             loss.backward()
             optimizer.step()
             losses.append(float(loss.item()))
 
         # validation pass (full graph embeddings)
-        tgn.eval()
+        if TGN_AVAILABLE:
+            tgn.eval()
+            tgn.reset_state()
+            zs = torch.zeros((num_nodes, args.hidden_dim), device=device)
+        else:
+            memory.eval()
+            memory.reset_state()
+            zs = torch.zeros((num_nodes, args.memory_dim), device=device)
+
         decoder.eval()
-        tgn.reset_state()
-        zs = torch.zeros((num_nodes, args.hidden_dim), device=device)
         for batch in loader:
-            z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
-            nodes = torch.cat([batch.src, batch.dst])
-            zs[nodes] = z.detach()
+            if TGN_AVAILABLE:
+                z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
+                nodes = torch.cat([batch.src, batch.dst])
+                zs[nodes] = z.detach()
+            else:
+                memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+                nodes = torch.cat([batch.src, batch.dst])
+                mem, _ = memory(nodes)
+                zs[nodes] = mem.detach()
 
         with torch.no_grad():
             logits = decoder(zs)
@@ -194,10 +256,16 @@ def main() -> None:
 
         if val_metrics["pr_auc"] > best_val:
             best_val = val_metrics["pr_auc"]
-            best_state = {
-                "tgn": {k: v.detach().cpu() for k, v in tgn.state_dict().items()},
-                "decoder": {k: v.detach().cpu() for k, v in decoder.state_dict().items()},
-            }
+            if TGN_AVAILABLE:
+                best_state = {
+                    "tgn": {k: v.detach().cpu() for k, v in tgn.state_dict().items()},
+                    "decoder": {k: v.detach().cpu() for k, v in decoder.state_dict().items()},
+                }
+            else:
+                best_state = {
+                    "memory": {k: v.detach().cpu() for k, v in memory.state_dict().items()},
+                    "decoder": {k: v.detach().cpu() for k, v in decoder.state_dict().items()},
+                }
             patience_counter = 0
         else:
             patience_counter += 1
@@ -208,17 +276,32 @@ def main() -> None:
 
     # test
     if best_state is not None:
-        tgn.load_state_dict(best_state["tgn"])
+        if TGN_AVAILABLE:
+            tgn.load_state_dict(best_state["tgn"])
+        else:
+            memory.load_state_dict(best_state["memory"])
         decoder.load_state_dict(best_state["decoder"])
 
-    tgn.eval()
+    if TGN_AVAILABLE:
+        tgn.eval()
+        tgn.reset_state()
+        zs = torch.zeros((num_nodes, args.hidden_dim), device=device)
+    else:
+        memory.eval()
+        memory.reset_state()
+        zs = torch.zeros((num_nodes, args.memory_dim), device=device)
+
     decoder.eval()
-    tgn.reset_state()
-    zs = torch.zeros((num_nodes, args.hidden_dim), device=device)
     for batch in loader:
-        z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
-        nodes = torch.cat([batch.src, batch.dst])
-        zs[nodes] = z.detach()
+        if TGN_AVAILABLE:
+            z, _ = tgn(batch.src, batch.dst, batch.t, batch.msg)
+            nodes = torch.cat([batch.src, batch.dst])
+            zs[nodes] = z.detach()
+        else:
+            memory.update_state(batch.src, batch.dst, batch.t, batch.msg)
+            nodes = torch.cat([batch.src, batch.dst])
+            mem, _ = memory(nodes)
+            zs[nodes] = mem.detach()
 
     with torch.no_grad():
         logits = decoder(zs)
@@ -234,6 +317,7 @@ def main() -> None:
         "val_metrics": val_metrics,
         "config": {
             "model": "tgn",
+            "tgn_available": TGN_AVAILABLE,
             "hidden_dim": args.hidden_dim,
             "memory_dim": args.memory_dim,
             "time_dim": args.time_dim,
