@@ -17,10 +17,16 @@ try:
     from torch_geometric.data import TemporalData
     from torch_geometric.loader import TemporalDataLoader
     from torch_geometric.nn.models import TGN
-except ImportError as exc:  # pragma: no cover
-    raise ImportError(
-        "torch_geometric (with temporal support) is required for TGN."
-    ) from exc
+except ImportError:
+    try:
+        from torch_geometric.data import TemporalData
+        from torch_geometric.loader import TemporalDataLoader
+        from torch_geometric_temporal.nn.recurrent import TGN
+    except ImportError as exc:  # pragma: no cover
+        raise ImportError(
+            "TGN not available. Install a PyG version with TGN, or install "
+            "torch-geometric-temporal."
+        ) from exc
 
 
 @dataclass
