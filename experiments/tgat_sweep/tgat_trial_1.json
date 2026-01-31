@@ -1,15 +1,15 @@
 {
   "seed": 42,
-  "best_epoch": 63,
+  "best_epoch": 62,
   "metrics": {
-    "pr_auc": 0.38465875028720586,
-    "recall_at_1pct_fpr": 0.2916666666666667,
+    "pr_auc": 0.38475705780102154,
+    "recall_at_1pct_fpr": 0.28921568627450983,
     "precision_at_1pct": 0.8863636363636364
   },
   "val_metrics": {
-    "pr_auc": 0.5456243754266106,
-    "recall_at_1pct_fpr": 0.24592592592592594,
-    "precision_at_1pct": 0.8974358974358975
+    "pr_auc": 0.5296477675549948,
+    "recall_at_1pct_fpr": 0.24444444444444444,
+    "precision_at_1pct": 0.8846153846153846
   },
   "config": {
     "model": "tgatv2",

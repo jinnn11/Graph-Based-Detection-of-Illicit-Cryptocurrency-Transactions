@@ -1,0 +1,31 @@
+{
+  "seed": 42,
+  "best_epoch": 41,
+  "metrics": {
+    "pr_auc": 0.42916022268721876,
+    "recall_at_1pct_fpr": 0.33578431372549017,
+    "precision_at_1pct": 0.9431818181818182
+  },
+  "val_metrics": {
+    "pr_auc": 0.5550465653953849,
+    "recall_at_1pct_fpr": 0.3437037037037037,
+    "precision_at_1pct": 0.9487179487179487
+  },
+  "config": {
+    "model": "tgatv2",
+    "heads": 4,
+    "time_dim": 32,
+    "hidden_dim": 64,
+    "num_layers": 2,
+    "dropout": 0.3,
+    "lr": 0.0015,
+    "weight_decay": 0.00025,
+    "epochs": 120,
+    "patience": 15,
+    "loss": "cross_entropy",
+    "focal_gamma": 2.0,
+    "add_self_loops": true,
+    "graph_normalized": true,
+    "graph_reverse_edges": true
+  }
+}

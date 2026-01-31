@@ -2,12 +2,12 @@
   "seed": 42,
   "best_epoch": 19,
   "metrics": {
-    "pr_auc": 0.08755227219322213,
+    "pr_auc": 0.08753720059008396,
     "recall_at_1pct_fpr": 0.004901960784313725,
     "precision_at_1pct": 0.022727272727272728
   },
   "val_metrics": {
-    "pr_auc": 0.360614057617747,
+    "pr_auc": 0.3605187606928921,
     "recall_at_1pct_fpr": 0.09777777777777778,
     "precision_at_1pct": 0.5384615384615384
   },
